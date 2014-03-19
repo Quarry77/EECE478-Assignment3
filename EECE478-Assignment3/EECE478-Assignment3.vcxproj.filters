@@ -24,12 +24,18 @@
     <ClCompile Include="ModelIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CityIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assignment3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ModelIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CityIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
