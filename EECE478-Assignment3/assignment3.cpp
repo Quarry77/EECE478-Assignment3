@@ -225,6 +225,7 @@ int main(int argc, char** argv)
 		cout << "./GasStation/GasStation.model" << endl;
 		g_model = ModelIO("./GasStation/GasStation.model");
 	}
+	CityIO myCity("./JohnCity.city");
 
 	// Initiate graphics
     glutInit(&argc, argv);

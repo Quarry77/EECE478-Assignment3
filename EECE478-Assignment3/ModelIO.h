@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <GL/glut.h>
 
 using namespace std;
@@ -47,10 +48,10 @@ public:
 	~ModelIO(void);
 
 	void RenderModel(void);
-	string RemoveLeadingWS(string str);
-	string RemoveTrailingWS(string str);
-	float StringToFloat(string str);
-	int StringToInt(string str);
+	static string RemoveLeadingWS(string str);
+	static string RemoveTrailingWS(string str);
+	static float StringToFloat(string str);
+	static int StringToInt(string str);
 	void LoadTextures(void);
 	unsigned char *ReadPPM(string &filename, int &width, int &height);
 };

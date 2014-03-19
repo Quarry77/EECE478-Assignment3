@@ -9,4 +9,4 @@ JohnCity
 # this file is in as the reference)
 # The next set of entries represent the transformation:
 # Scale in x,y,z, Rotation around x-axis, y-axis, z-axis, Translation from origin i.e.:
-./ThunderbirdSportsCentre/ThunderbirdSportsCentre.model Sx1 Sy1 Sz1 Rx1 Ry1 Rz1 Tx1 Ty1 Tz1
+./ThunderbirdSportsCentre/ThunderbirdSportsCentre.model 1 1 1 0 0 0 0 0 0

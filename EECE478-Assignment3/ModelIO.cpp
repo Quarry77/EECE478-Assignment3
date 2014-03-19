@@ -30,7 +30,7 @@ ModelIO::ModelIO(string file)
 		int count = 0;
 		while(getline(modelFile, line)) 
 		{
-			// Strip all empty and commented lines and count the rest
+			// Strip all empty and commented lines and count the rSest
 			line = RemoveLeadingWS(line);
 			if(line.size() > 0 && line.at(0) != '#') {
 				count++;
