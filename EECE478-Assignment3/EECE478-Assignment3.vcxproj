@@ -84,11 +84,13 @@
     <ClCompile Include="assignment3.cpp" />
     <ClCompile Include="CityIO.cpp" />
     <ClCompile Include="ModelIO.cpp" />
+    <ClCompile Include="PPM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assignment3.h" />
     <ClInclude Include="CityIO.h" />
     <ClInclude Include="ModelIO.h" />
+    <ClInclude Include="PPM.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

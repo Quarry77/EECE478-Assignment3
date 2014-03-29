@@ -27,6 +27,9 @@
     <ClCompile Include="CityIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PPM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assignment3.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CityIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PPM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

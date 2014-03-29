@@ -26,13 +26,13 @@ int g_height;
 int g_activeKey = -1;
 int g_activeX;
 int g_activeY;
-float g_radius = 200.0;
 float g_horizontalAngle = 0;
-float g_verticalAngle = 90;
-float g_focusX = 0;
-float g_focusY = 80;
-float g_focusZ = -200;
-ModelIO g_model = ModelIO();
+float g_verticalAngle = 100;
+float g_camX = 0;
+float g_camY = 200;
+float g_camZ = 100;
+vector<GLuint> g_skyboxTextures;
+CityIO g_city;
 
 // Renders my name and student number in the lower right of the screen
 void RenderText() 
@@ -79,13 +79,21 @@ void Display()
     float lookX = sin(g_verticalAngle * PI / 180.0) * sin(g_horizontalAngle * PI / 180.0);
     float lookY = cos(g_verticalAngle * PI / 180.0);
 
-	gluLookAt(g_focusX, g_focusY, g_focusZ, g_focusX + lookX, g_focusY + lookY, g_focusZ + lookZ, 0, 1, 0);
-	//glTranslatef(g_focusX, g_focusY, g_focusZ);
-	//glRotatef(g_verticalAngle, 1, 0, 0);
-	//glRotatef(g_horizontalAngle, 0, 1, 0);
-	//glTranslatef(-g_focusX, -g_focusY, -g_focusZ);
+	gluLookAt(g_camX, g_camY, g_camZ, g_camX + lookX, g_camY + lookY, g_camZ + lookZ, 0, 1, 0);
 
-	g_model.RenderModel();
+	for(int i = 0; i < g_city.buildings.size(); i++) {
+		glPushMatrix();
+		glTranslatef(g_city.buildings[i].tx, g_city.buildings[i].ty, g_city.buildings[i].tz);
+		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
+		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
+		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
+		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
+		g_city.buildings[i].model.RenderModel();
+		glPopMatrix();
+	}
+
+	// Skybox 5000 ups
+	DrawSkybox();
 
     // Render my name and student number
 	RenderText();
@@ -103,6 +111,7 @@ void Init()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 }
 
 // Callback for when the application window is altered
@@ -149,15 +158,14 @@ void MouseMove(int x, int y)
 		g_verticalAngle += (y - g_activeY) * 0.6;
 		if(g_verticalAngle > VERTICAL_MAX) g_verticalAngle = VERTICAL_MAX;
 		if(g_verticalAngle < VERTICAL_MIN) g_verticalAngle = VERTICAL_MIN;
-		cout << "Horizontal: " << g_horizontalAngle << ", Vertical: " << g_verticalAngle << endl;
 
 		glutPostRedisplay();
 
 	// Translate model while right clicking
 	} else if(g_activeKey == RIGHT_MOUSE_CLICK) {
-		g_focusX += (g_activeX - x) * TRANSLATE_SCALE * g_radius * cos(g_horizontalAngle * PI / 180.0);
-		g_focusZ += (g_activeX - x) * TRANSLATE_SCALE * g_radius * sin(g_horizontalAngle * PI / 180.0);
-		g_focusY += (y - g_activeY) * TRANSLATE_SCALE * g_radius;
+		g_camX += (g_activeX - x) * TRANSLATE_SCALE * cos(g_horizontalAngle * PI / 180.0);
+		g_camZ += (g_activeX - x) * TRANSLATE_SCALE * sin(g_horizontalAngle * PI / 180.0);
+		g_camY += (y - g_activeY) * TRANSLATE_SCALE;
 
 		glutPostRedisplay();
 	}
@@ -173,11 +181,10 @@ void Keyboard(unsigned char key, int x, int y)
 	// Reset
 	if(key == 'r') {
 		g_horizontalAngle = 0;
-		g_verticalAngle = 0;
-		g_radius = g_model.defaultRadius;
-		g_focusX = 0;
-		g_focusY = 0;
-		g_focusZ = 0;
+		g_verticalAngle = 90;
+		g_camX = 0;
+		g_camY = 0;
+		g_camZ = 0;
 
 		glutPostRedisplay();
 
@@ -185,14 +192,14 @@ void Keyboard(unsigned char key, int x, int y)
 	} else if(key == 27) {
 		exit(0);
 	} else if(key == 'w') {
-		g_focusZ += 5 * sin(g_verticalAngle * PI / 180.0) * cos(g_horizontalAngle * PI / 180.0);
-		g_focusX += 5 * sin(g_verticalAngle * PI / 180.0) * sin(g_horizontalAngle * PI / 180.0);
-		g_focusY += 5 * cos(g_verticalAngle * PI / 180.0);
+		g_camZ += 50 * sin(g_verticalAngle * PI / 180.0) * cos(g_horizontalAngle * PI / 180.0);
+		g_camX += 50 * sin(g_verticalAngle * PI / 180.0) * sin(g_horizontalAngle * PI / 180.0);
+		g_camY += 50 * cos(g_verticalAngle * PI / 180.0);
 		glutPostRedisplay();
 	} else if(key == 's') {
-		g_focusZ -= 5 * sin(g_verticalAngle * PI / 180.0) * cos(g_horizontalAngle * PI / 180.0);
-		g_focusX -= 5 * sin(g_verticalAngle * PI / 180.0) * sin(g_horizontalAngle * PI / 180.0);
-		g_focusY -= 5 * cos(g_verticalAngle * PI / 180.0);
+		g_camZ -= 50 * sin(g_verticalAngle * PI / 180.0) * cos(g_horizontalAngle * PI / 180.0);
+		g_camX -= 50 * sin(g_verticalAngle * PI / 180.0) * sin(g_horizontalAngle * PI / 180.0);
+		g_camY -= 50 * cos(g_verticalAngle * PI / 180.0);
 		glutPostRedisplay();
 	}
 }
@@ -202,15 +209,83 @@ void SpecialKeyboard(int key, int x, int y)
 {
 	// Zoom in with up arrow
 	if(key == GLUT_KEY_UP) {
-		g_radius *= 10.0/11.0;
-		if(g_radius < RADIUS_MIN) g_radius = RADIUS_MIN;
-		glutPostRedisplay();
 
 	// Zoom out with down arrow
 	} else if(key == GLUT_KEY_DOWN) {
-		g_radius *= 1.1;
-		if(g_radius > RADIUS_MAX) g_radius = RADIUS_MAX;
-		glutPostRedisplay();
+	}
+}
+
+// Draws the skybox for the city
+void DrawSkybox() {
+	float textureCoords[][2] = {
+		{0, 1},
+		{1, 1},
+		{0, 0},
+		{1, 0},
+		{0, 0.5},
+		{1, 0.5},
+		{0, 40},
+		{40, 40},
+		{40, 0}
+	};
+	int textureCoordOrder[][4] = {
+		{6, 7, 2, 8},
+		{4, 5, 2, 3},
+		{4, 5, 2, 3},
+		{4, 5, 2, 3},
+		{4, 5, 2, 3},
+		{0, 1, 2, 3}
+	};
+	float vertices[][3] = {
+		{-10000, 0, -10000},
+		{-10000, 0, 10000},
+		{10000, 0, 10000},
+		{10000, 0, -10000},
+		{-10000, 10000, -10000},
+		{-10000, 10000, 10000},
+		{10000, 10000, 10000},
+		{10000, 10000, -10000}
+	};
+	int verticeOrder[][4] = {
+		{0, 3, 1, 2},
+		{3, 0, 7, 4},
+		{0, 1, 4, 5},
+		{1, 2, 5, 6},
+		{2, 3, 6, 7},
+		{5, 6, 4, 7}
+	};
+
+	for( int i = 0; i < g_skyboxTextures.size(); i++ ) {
+		float texOffsetX = 0;
+		float texOffsetZ = 0;
+		if(i == 0) {
+			texOffsetX += g_camX / 500.0;
+			texOffsetZ -= g_camZ / 500.0;
+		}
+
+		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		glBindTexture(GL_TEXTURE_2D, g_skyboxTextures.at(i));
+		glBegin(GL_TRIANGLES);
+		
+		glTexCoord2f(textureCoords[textureCoordOrder[i][1]][0] + texOffsetX, textureCoords[textureCoordOrder[i][1]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][1]][0] + g_camX, vertices[verticeOrder[i][1]][1], vertices[verticeOrder[i][1]][2] + g_camZ);
+		glTexCoord2f(textureCoords[textureCoordOrder[i][0]][0] + texOffsetX, textureCoords[textureCoordOrder[i][0]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][0]][0] + g_camX, vertices[verticeOrder[i][0]][1], vertices[verticeOrder[i][0]][2] + g_camZ);
+		glTexCoord2f(textureCoords[textureCoordOrder[i][2]][0] + texOffsetX, textureCoords[textureCoordOrder[i][2]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][2]][0] + g_camX, vertices[verticeOrder[i][2]][1], vertices[verticeOrder[i][2]][2] + g_camZ);
+
+		glEnd();
+
+		glBegin(GL_TRIANGLES);
+		
+		glTexCoord2f(textureCoords[textureCoordOrder[i][3]][0] + texOffsetX, textureCoords[textureCoordOrder[i][3]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][3]][0] + g_camX, vertices[verticeOrder[i][3]][1], vertices[verticeOrder[i][3]][2] + g_camZ);
+		glTexCoord2f(textureCoords[textureCoordOrder[i][1]][0] + texOffsetX, textureCoords[textureCoordOrder[i][1]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][1]][0] + g_camX, vertices[verticeOrder[i][1]][1], vertices[verticeOrder[i][1]][2] + g_camZ);
+		glTexCoord2f(textureCoords[textureCoordOrder[i][2]][0] + texOffsetX, textureCoords[textureCoordOrder[i][2]][1] + texOffsetZ);
+		glVertex3f(vertices[verticeOrder[i][2]][0] + g_camX, vertices[verticeOrder[i][2]][1], vertices[verticeOrder[i][2]][2] + g_camZ);
+
+		glEnd();
 	}
 }
 
@@ -220,19 +295,18 @@ int main(int argc, char** argv)
 	// Set model to render
 	if(argc > 1) {
 		cout << argv[1] << endl;
-		g_model = ModelIO(argv[1]);
+		g_city = CityIO(argv[1]);
 	} else {
-		cout << "./GasStation/GasStation.model" << endl;
-		g_model = ModelIO("./GasStation/GasStation.model");
+		cout << "./JohnCity.city" << endl;
+		g_city = CityIO("./JohnCity.city");
 	}
-	CityIO myCity("./JohnCity.city");
 
 	// Initiate graphics
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(1280,720);
     glutInitWindowPosition(0,0);
-	glutCreateWindow(g_model.name.c_str());
+	glutCreateWindow(g_city.name.c_str());
     Init();
 
 	// Set glut event callbacks
@@ -242,13 +316,12 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(Keyboard);
     glutDisplayFunc(Display);
 	glutSpecialFunc(SpecialKeyboard);
-
-	// Set the default viewing distance based the furthest distance in the model data
-	g_radius = g_model.defaultRadius;
-
-	// Load the texture files into OpenGL
-	g_model.LoadTextures();
     
+	for(int i = 0; i < g_city.buildings.size(); i++) {
+		g_city.buildings[i].model.LoadTextures();
+	}
+	g_city.LoadSkyBoxTextures(g_skyboxTextures);
+
     glutMainLoop();
     return 0;
 }

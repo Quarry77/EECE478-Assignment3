@@ -28,5 +28,7 @@ public:
 	CityIO(string file);
 	CityIO(void);
 	~CityIO(void);
+	void LoadSkyBoxTextures(vector<GLuint> &texIds);
+	unsigned char *ReadPPM(string &filename, int &width, int &height);
 };
 

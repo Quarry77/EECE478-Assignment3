@@ -2,11 +2,13 @@
 JohnCity
 
 # Number of models specified
-1
+3
 
 # List of models and transformations for each:
 # First entry is the name of the model (including the path, using the directory
 # this file is in as the reference)
 # The next set of entries represent the transformation:
 # Scale in x,y,z, Rotation around x-axis, y-axis, z-axis, Translation from origin i.e.:
-./ThunderbirdSportsCentre/ThunderbirdSportsCentre.model 1 1 1 0 0 0 0 0 0
+./GasStation/GasStation.model 1 1 1 0 180 0 0 0 0
+./ThunderbirdSportsCentre/ThunderbirdSportsCentre.model 0.06 0.06 0.06 0 0 0 0 0 800
+./ClockTower/ClockTower.model 30 30 30 -90 0 0 -400 0 0

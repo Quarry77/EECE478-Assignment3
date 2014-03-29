@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <GL/glut.h>
+#include "ppm.h"
 
 using namespace std;
 
@@ -53,6 +54,5 @@ public:
 	static float StringToFloat(string str);
 	static int StringToInt(string str);
 	void LoadTextures(void);
-	unsigned char *ReadPPM(string &filename, int &width, int &height);
 };
 

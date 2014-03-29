@@ -16,7 +16,6 @@ ModelIO::ModelIO(string file)
 	filePath = file;
 	string line;
 	validModel = false;
-	defaultRadius = 1;
 	name = "";
 	int nameIndex[2];
 	int texturesIndex[2];
@@ -25,7 +24,6 @@ ModelIO::ModelIO(string file)
 	int trianglesIndex[2];
 
 	// Read from model file
-	cout << "Loading Model..." << endl;
 	if(modelFile.is_open()) {
 		int count = 0;
 		while(getline(modelFile, line)) 
@@ -73,7 +71,6 @@ ModelIO::ModelIO(string file)
 		}
 
 		modelFile.close();
-		cout << "Model Loaded. Parsing..." << endl;
 	} else {
 		cout << "Unable to open file" << endl;
 		return;
@@ -98,28 +95,12 @@ ModelIO::ModelIO(string file)
 	k = 0;
 	for( int i = verticesIndex[0]; i < verticesIndex[1]; i++ ) {
 		vertex tmp;
-		string thisLine = model.at(i);
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.x = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.y = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		tmp.z = StringToFloat(thisLine);
+		stringstream thisLine(model.at(i));
+		thisLine >> tmp.x;
+		thisLine >> tmp.y;
+		thisLine >> tmp.z;
 		vertices.at(k) = tmp;
 		k++;
-
-		// Set the default viewing distance based on vertex data
-		float dist = sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
-		if(dist * 1.5 > defaultRadius) {defaultRadius = dist * 1.5;}
 	}
 
 	// Normals
@@ -127,22 +108,10 @@ ModelIO::ModelIO(string file)
 	k = 0;
 	for( int i = normalsIndex[0]; i < normalsIndex[1]; i++ ) {
 		vertex tmp;
-		string thisLine = model.at(i);
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.x = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.y = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		tmp.z = StringToFloat(thisLine);
+		stringstream thisLine(model.at(i));
+		thisLine >> tmp.x;
+		thisLine >> tmp.y;
+		thisLine >> tmp.z;
 		normals.at(k) = tmp;
 		k++;
 	}
@@ -152,78 +121,19 @@ ModelIO::ModelIO(string file)
 	k = 0;
 	for( int i = trianglesIndex[0]; i < trianglesIndex[1]; i++ ) {
 		triangle tmp;
-		string thisLine = model.at(i);
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.vertexIndex1 = StringToInt(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.vertexIndex2 = StringToInt(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.vertexIndex3 = StringToInt(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.normalIndex = StringToInt(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureIndex = StringToInt(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureCoord1 = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureCoord2 = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureCoord3 = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureCoord4 = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		for(unsigned int j = 0; j < thisLine.size(); j++) {
-			if(isspace(thisLine.at(j))) {
-				tmp.textureCoord5 = StringToFloat(thisLine.substr(0, j));
-				thisLine = RemoveLeadingWS(thisLine.substr(j));
-				break;
-			}
-		}
-		tmp.textureCoord6 = StringToFloat(thisLine);
+		stringstream thisLine(model.at(i));
+		thisLine >> tmp.vertexIndex1;
+		thisLine >> tmp.vertexIndex2;
+		thisLine >> tmp.vertexIndex3;
+		thisLine >> tmp.normalIndex;
+		thisLine >> tmp.textureIndex;
+		thisLine >> tmp.textureCoord1;
+		thisLine >> tmp.textureCoord2;
+		thisLine >> tmp.textureCoord3;
+		thisLine >> tmp.textureCoord4;
+		thisLine >> tmp.textureCoord5;
+		thisLine >> tmp.textureCoord6;
+		
 		triangles.at(k) = tmp;
 		k++;
 	}
@@ -242,13 +152,7 @@ ModelIO::~ModelIO(void)
 // Draws the triangles for the loaded model
 void ModelIO::RenderModel(void)
 {
-	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-	glClear( GL_COLOR_BUFFER_BIT );
-	glEnable(GL_TEXTURE_2D);
 	for(unsigned int i = 0; i < triangles.size(); i++) {
-		// Randomizes the colors in a predefined way to show contours without changing each frame
-		//srand(i);
-		//glColor3f((rand() % 105 + 5)/100.0, (rand() % 105 + 5)/100.0, (rand() % 105 + 5)/100.0);
 
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		glBindTexture(GL_TEXTURE_2D, textureIds.at(triangles.at(i).textureIndex));
@@ -316,7 +220,7 @@ void ModelIO::LoadTextures()
 	textureIds.resize(textures.size());
 
 	for(int i = 0; i < textures.size(); i++){
-		unsigned char* image = ReadPPM(directory + textures.at(i), width, height);
+		unsigned char* image = PPM::read(directory + textures.at(i), width, height);
 
 		glGenTextures(1, &textureIds.at(i));
 		glBindTexture(GL_TEXTURE_2D, textureIds.at(i));
@@ -332,48 +236,4 @@ void ModelIO::LoadTextures()
 		delete[] image;
 	}
 
-}
-
-// Adapted from ppm.cpp in Assignment 2 Useful Links
-unsigned char* ModelIO::ReadPPM(string &filename, int &width, int &height)
-{
-	FILE *ifp;
-	char buffer[80];
-	int i;
-	int header[3];
-	int tmp;
-
-	ifp = fopen(filename.c_str(), "rb");
-	if( !ifp ) {
-		throw std::string("Error opening file \"") + filename + std::string("\"");
-	}
-	  
-	i = 0;
-	fgets(buffer, 80, ifp);
-	if( strncmp(buffer, "P6", 2) ) {
-		fclose(ifp);
-		throw std::string("File is not in valid PPM format");
-	}
-
-	while( (i < 3) ) {
-		if( (tmp=fgetc(ifp)) == '#' ) {
-		fgets(buffer, 80, ifp);
-		continue;
-		} else {
-		ungetc(tmp, ifp);
-		fscanf(ifp, "%d", &header[i++]);
-		}
-	}
-	fgets(buffer, 80, ifp);
-
-	// Renew image
-	width = header[0];
-	height = header[1];
-	unsigned char *img = new unsigned char[width*height*3];
-
-	fread(img, 3, width * height, ifp);
-	img;
-	  
-	fclose(ifp);
-	return img;
 }
