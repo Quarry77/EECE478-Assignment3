@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include <GL/glut.h>
 #include "ppm.h"
 
@@ -48,6 +49,7 @@ public:
 	ModelIO(void);
 	~ModelIO(void);
 
+	static bool SortTriangles(triangle x, triangle y);
 	void RenderModel(void);
 	static string RemoveLeadingWS(string str);
 	static string RemoveTrailingWS(string str);

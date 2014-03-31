@@ -52,7 +52,7 @@ CityIO::~CityIO(void)
 
 void CityIO::LoadSkyBoxTextures(vector<GLuint> &texIds ) {
 	string skyboxLoc[] = {
-	"./JohnSkybox/concrete512.ppm",
+	"./JohnSkybox/grass512.ppm",
 	"./JohnSkybox/TropicalSunnyDayBack2048.ppm",
 	"./JohnSkybox/TropicalSunnyDayRight2048.ppm",
 	"./JohnSkybox/TropicalSunnyDayFront2048.ppm",

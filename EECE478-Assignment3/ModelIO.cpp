@@ -77,7 +77,7 @@ ModelIO::ModelIO(string file)
 	}
 	
 	// Name
-	for( unsigned int i = nameIndex[0]; i < nameIndex[1]; i++ ) {
+	for( int i = nameIndex[0]; i < nameIndex[1]; i++ ) {
 		name += model.at(i) + " ";
 	}
 	name = RemoveTrailingWS(name);
@@ -138,6 +138,8 @@ ModelIO::ModelIO(string file)
 		k++;
 	}
 
+	sort(triangles.begin(), triangles.end(), ModelIO::SortTriangles); 
+
 	// Simple test to see if the model has any substance
 	if(triangles.size() > 0 && vertices.size() > 0 && normals.size() > 0) {
 		validModel = true;
@@ -149,12 +151,24 @@ ModelIO::~ModelIO(void)
 {
 }
 
+bool ModelIO::SortTriangles(triangle x, triangle y) 
+{ 
+	return x.textureIndex < y.textureIndex; 
+}
+
 // Draws the triangles for the loaded model
 void ModelIO::RenderModel(void)
 {
-	for(unsigned int i = 0; i < triangles.size(); i++) {
+	glBegin(GL_TRIANGLES);
+	int lastTexId = -1;
 
-		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	for(unsigned int i = 0; i < triangles.size(); i++) {
+		if(triangles.at(i).textureIndex != lastTexId) {
+			glEnd();
+			glBindTexture(GL_TEXTURE_2D, textureIds.at(triangles.at(i).textureIndex));
+			glBegin(GL_TRIANGLES);
+		}
+
 		glBindTexture(GL_TEXTURE_2D, textureIds.at(triangles.at(i).textureIndex));
 		glBegin(GL_TRIANGLES);
 
@@ -166,9 +180,9 @@ void ModelIO::RenderModel(void)
 		glTexCoord2f(triangles.at(i).textureCoord5, triangles.at(i).textureCoord6);
 		glVertex3f(vertices.at(triangles.at(i).vertexIndex3).x, vertices.at(triangles.at(i).vertexIndex3).y, vertices.at(triangles.at(i).vertexIndex3).z);
 		
-		glEnd();
+		lastTexId = triangles.at(i).textureIndex;
 	}
-
+	glEnd();
 }
 
 // Removes white space at the beginning of the string
@@ -219,7 +233,7 @@ void ModelIO::LoadTextures()
 	int height;
 	textureIds.resize(textures.size());
 
-	for(int i = 0; i < textures.size(); i++){
+	for(unsigned int i = 0; i < textures.size(); i++){
 		unsigned char* image = PPM::read(directory + textures.at(i), width, height);
 
 		glGenTextures(1, &textureIds.at(i));

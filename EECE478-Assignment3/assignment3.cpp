@@ -81,7 +81,7 @@ void Display()
 
 	gluLookAt(g_camX, g_camY, g_camZ, g_camX + lookX, g_camY + lookY, g_camZ + lookZ, 0, 1, 0);
 
-	for(int i = 0; i < g_city.buildings.size(); i++) {
+	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
 		glPushMatrix();
 		glTranslatef(g_city.buildings[i].tx, g_city.buildings[i].ty, g_city.buildings[i].tz);
 		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
@@ -224,9 +224,9 @@ void DrawSkybox() {
 		{1, 0},
 		{0, 0.5},
 		{1, 0.5},
-		{0, 40},
-		{40, 40},
-		{40, 0}
+		{0, 100},
+		{100, 100},
+		{100, 0}
 	};
 	int textureCoordOrder[][4] = {
 		{6, 7, 2, 8},
@@ -255,12 +255,12 @@ void DrawSkybox() {
 		{5, 6, 4, 7}
 	};
 
-	for( int i = 0; i < g_skyboxTextures.size(); i++ ) {
+	for( unsigned int i = 0; i < g_skyboxTextures.size(); i++ ) {
 		float texOffsetX = 0;
 		float texOffsetZ = 0;
 		if(i == 0) {
-			texOffsetX += g_camX / 500.0;
-			texOffsetZ -= g_camZ / 500.0;
+			texOffsetX += g_camX / 200.0;
+			texOffsetZ -= g_camZ / 200.0;
 		}
 
 		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -317,7 +317,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(Display);
 	glutSpecialFunc(SpecialKeyboard);
     
-	for(int i = 0; i < g_city.buildings.size(); i++) {
+	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
 		g_city.buildings[i].model.LoadTextures();
 	}
 	g_city.LoadSkyBoxTextures(g_skyboxTextures);
