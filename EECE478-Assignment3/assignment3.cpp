@@ -26,11 +26,15 @@ int g_height;
 int g_activeKey = -1;
 int g_activeX;
 int g_activeY;
+int g_xOffset = 0;
+int g_zOffset = 0;
+int g_cityMultiplier = 1;
 float g_horizontalAngle = 0;
 float g_verticalAngle = 100;
 float g_camX = 0;
 float g_camY = 200;
 float g_camZ = 100;
+
 vector<GLuint> g_skyboxTextures;
 CityIO g_city;
 
@@ -81,37 +85,24 @@ void Display()
 
 	gluLookAt(g_camX, g_camY, g_camZ, g_camX + lookX, g_camY + lookY, g_camZ + lookZ, 0, 1, 0);
 
-	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
-		glPushMatrix();
-		glTranslatef(g_city.buildings[i].tx, g_city.buildings[i].ty, g_city.buildings[i].tz);
-		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
-		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
-		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
-		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
-		g_city.buildings[i].model.RenderModel();
-		glPopMatrix();
-	}
+	while(g_camX < g_xOffset) {g_xOffset -= 1900;}
+	while(g_camX > g_xOffset + 1900) {g_xOffset += 1900;}
+	while(g_camZ < g_zOffset) {g_zOffset -= 2000;}
+	while(g_camZ > g_zOffset + 2000) {g_zOffset += 2000;}
 
-	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
-		glPushMatrix();
-		glTranslatef(g_city.buildings[i].tx + 1900, g_city.buildings[i].ty, g_city.buildings[i].tz);
-		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
-		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
-		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
-		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
-		g_city.buildings[i].model.RenderModel();
-		glPopMatrix();
-	}
-
-	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
-		glPushMatrix();
-		glTranslatef(g_city.buildings[i].tx, g_city.buildings[i].ty, g_city.buildings[i].tz + 2000);
-		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
-		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
-		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
-		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
-		g_city.buildings[i].model.RenderModel();
-		glPopMatrix();
+	for(int j = g_xOffset - (1900 * g_cityMultiplier); j <= g_xOffset + (1900 * g_cityMultiplier); j += 1900) {
+		for(int k = g_zOffset - (2000 * g_cityMultiplier); k <= g_zOffset + (2000 * g_cityMultiplier); k += 2000) {
+			for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
+				glPushMatrix();
+				glTranslatef(g_city.buildings[i].tx + j, g_city.buildings[i].ty, g_city.buildings[i].tz + k);
+				glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
+				glRotatef(g_city.buildings[i].rz, 0, 0, 1);
+				glRotatef(g_city.buildings[i].ry, 0, 1, 0);
+				glRotatef(g_city.buildings[i].rx, 1, 0, 0);
+				g_city.buildings[i].model.RenderModel();
+				glPopMatrix();
+			}
+		}
 	}
 
 	// Skybox 5000 ups
@@ -132,6 +123,11 @@ void Init()
     glLoadIdentity();
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	float difLight0[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, difLight0);
+	glMaterialf(GL_FRONT, GL_SHININESS, 10.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 }
