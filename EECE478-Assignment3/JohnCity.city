@@ -2,7 +2,7 @@
 JohnCity
 
 # Number of models specified
-12
+15
 
 # List of models and transformations for each:
 # First entry is the name of the model (including the path, using the directory
@@ -15,9 +15,12 @@ JohnCity
 ./AERL/AERL.model 10 10 10 0 180 0 600 0 0
 ./1238Robson/1238Robson.model 0.3 0.3 0.3 0 180 0 1025 0 30
 ./AbdulLadhaCentre/AbdulLadhaCentre.model 10 10 10 0 0 0 840 0 775
-./Barn/Barn.model 8 8 8 0 180 0 -400 0 50
+./Barn/Barn.model 8 8 8 0 180 0 -380 0 50
 ./BiomedicalResearchCentre/BiomedicalResearchCentre.model 7 7 7 0 -90 0 750 0 1000
 ./BuchananTower/BuchananTower.model 5 5 5 0 0 0 650 0 -400
 ./BusShelter/BusShelter.model 30 30 30 0 180 0 500 0 -350
 ./CecilGreenParkCoachHouse/CecilGreenParkCoachHouse.model 15 15 15 0 -90 0 250 0 -400
 ./ForestSciencesCentre/ForestSciencesCentre.model 14 14 14 0 180 0 -100 0 -475
+./VancouverAcademyOfMusic/VancouverAcademyOfMusic.model 4 4 4 0 90 0 480 0 -550
+./CoalMineralProcessing/CoalMineralProcessing.model 9 9 9 0 0 0 -630 0 -300
+./ScotiaTower/ScotiaTower.model 50 50 50 0 0 0 -600 0 150

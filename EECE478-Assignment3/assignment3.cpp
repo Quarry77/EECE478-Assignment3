@@ -92,6 +92,28 @@ void Display()
 		glPopMatrix();
 	}
 
+	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
+		glPushMatrix();
+		glTranslatef(g_city.buildings[i].tx + 1900, g_city.buildings[i].ty, g_city.buildings[i].tz);
+		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
+		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
+		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
+		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
+		g_city.buildings[i].model.RenderModel();
+		glPopMatrix();
+	}
+
+	for(unsigned int i = 0; i < g_city.buildings.size(); i++) {
+		glPushMatrix();
+		glTranslatef(g_city.buildings[i].tx, g_city.buildings[i].ty, g_city.buildings[i].tz + 2000);
+		glScalef(g_city.buildings[i].sx, g_city.buildings[i].sy, g_city.buildings[i].sz);
+		glRotatef(g_city.buildings[i].rz, 0, 0, 1);
+		glRotatef(g_city.buildings[i].ry, 0, 1, 0);
+		glRotatef(g_city.buildings[i].rx, 1, 0, 0);
+		g_city.buildings[i].model.RenderModel();
+		glPopMatrix();
+	}
+
 	// Skybox 5000 ups
 	DrawSkybox();
 
